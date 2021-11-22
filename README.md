@@ -1,12 +1,13 @@
 # ha-wordclock-esphome
 ## General
-This project is just for documentation purposes and our attempt (together with a friend) to build an Wordclock, which is thightly bound to homeassistant usiung esphome.
+This project is just for documentation purposes and our attempt (together with a friend) to build an Wordclock, which is thightly bound to homeassistant using esphome.
 It uses the time and fastled plattform of esphome to controll the clock.
 ### Features:
 - Get time from HA instance
 - Controll color and brightness from ha
 - Controll status leds from ha with service calls
 - uses esphome for OTA/API
+- supports minutes LEDS
 
 ![Image of final wordclock](https://github.com/leinich/ha-wordclock-esphome/blob/main/images/Front.png?raw=true)
 
