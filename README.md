@@ -8,6 +8,8 @@ It uses the time and fastled plattform of esphome to controll the clock.
 - Controll status leds from ha with service calls
 - uses esphome for OTA/API
 
+![Image of final wordclock](https://github.com/leinich/ha-wordclock-esphome/blob/main/images/Front.png?raw=true)
+
 ## Shopping list:
 - Mirror 30x30 (IKEA LOTS - 7.99EUR/4Pack)
 - Woodframe
@@ -35,6 +37,8 @@ It uses the time and fastled plattform of esphome to controll the clock.
      ICONS          110.......120
      MINUTES        124.......121
 ```
+![Image of final wordclock](https://github.com/leinich/ha-wordclock-esphome/blob/main/images/Back_leds.png?raw=true)
+
 - Connect Ground and 5V and Data Pin of WS2812 to D5 Pin to the ESP8266
 - Copy wordclock.yaml and wordclock.h into /config/esphome directory 
 - Using esphome GUI you can flash wordclock.yaml to an esp8266
