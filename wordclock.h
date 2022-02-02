@@ -62,6 +62,7 @@ int red = 124;
 int green = 124;
 int blue = 124;
 int brightness = 50;
+bool change = false;
 
 class Wordclock : public Component, public CustomAPIDevice {
     public:
@@ -86,18 +87,40 @@ class Wordclock : public Component, public CustomAPIDevice {
         }
         void loop() override {
             auto time = id(current_time).now();
-            int h = time.hour;
-            int m = time.minute;
+            auto ldr2 = id(ldr);
+            auto selecttype2 = id(selecttype);
             // https://www.esphome.io/api/classesphome_1_1light_1_1_light_color_values.html LightColorValues Class
             auto fastledlight2 = id(fastledlight).current_values;
+            
+            int h = time.hour;
+            int m = time.minute;
             //convert float 0.0 till 1.0 into int 0 till 255
             red = (int)(fastledlight2.get_red()*255);
             green = (int)(fastledlight2.get_green()*255);
             blue = (int)(fastledlight2.get_blue()*255);
-            brightness = 0;
+            
             //check if light is on and set brightness
-            if (fastledlight2.get_state() > 0 ) { brightness = (int)(fastledlight2.get_brightness()*255); }
-            else { ESP_LOGD("loop", "fastledlight state off - b: %i rgb %i %i %i", brightness, red, green, blue); delay(500);}
+            if (fastledlight2.get_state() > 0 ) { 
+                if (selecttype2.state == "ldr") {
+                    int brightness2 = (int)(ldr2.get_state()*255);
+                    if (brightness != brightness2) { 
+                        change = 1; 
+                        brightness = brightness2;
+                    }
+                    if (brightness == 0) {
+                        change = 1;
+                        brightness = 1;
+                    }
+                }
+                else {
+                    brightness = (int)(fastledlight2.get_brightness()*255); 
+                }
+            }
+            else { 
+                brightness = 0;
+                //ESP_LOGD("loop", "fastledlight state off - b: %i rgb %i %i %i", brightness, red, green, blue); 
+                delay(500);
+                }
             FastLED.setBrightness(brightness);
             //check if valid time. Blink red,green,blue until valid time is present
             if (time.is_valid() == false) {
@@ -109,10 +132,11 @@ class Wordclock : public Component, public CustomAPIDevice {
             }
             else {
                 // only update once in a Minute
-                if(h != hour || m != minute) {
-                   //ESP_LOGD("loop", "Using b: %i rgb %i %i %i", brightness, red, green, blue);
+                if(h != hour || m != minute  || change == 1) {
+                    ESP_LOGD("loop", "Using b: %i rgb %i %i %i - c %i", brightness, red, green, blue, change);
                     hour = h;
                     minute = m;
+                    change = 0;
                     if (hour >= 0 && time.is_valid() == true){
                         int tmp_hour = hour;
                         int tmp_minute = (minute - (minute % 5));
@@ -127,8 +151,8 @@ class Wordclock : public Component, public CustomAPIDevice {
                         for(int i = 0; i < 6; i++) {            if(leds_time_hours[tmp_hour][i] >= 0) { leds[leds_time_hours[tmp_hour][i]].setRGB(red, green, blue); } }
                         for(int i = 0; i < minutessum; i++) {   leds[leds_minutes[i]].setRGB(red, green, blue);}
                         FastLED.show();
-                        ESP_LOGD("loop", "Update Time: %i:%i  Brightness: %i RGB: %i-%i-%i", hour, minute, brightness, red, green, blue);
-                        ESP_LOGD("loop", "Using tmp_hour: %i tmp_minute: %i minutessum: %i", tmp_hour, tmp_minute, minutessum);
+                        //ESP_LOGD("loop", "Update Time: %i:%i  Brightness: %i RGB: %i-%i-%i", hour, minute, brightness, red, green, blue);
+                        //ESP_LOGD("loop", "Using tmp_hour: %i tmp_minute: %i minutessum: %i", tmp_hour, tmp_minute, minutessum);
                     }
                 }
             }

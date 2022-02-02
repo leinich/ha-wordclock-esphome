@@ -38,6 +38,7 @@ ota:
 logger:
   esp8266_store_log_strings_in_flash: false
 
+captive_portal:
 
 light:
   - platform: fastled_clockless
@@ -47,6 +48,24 @@ light:
     num_leds: 125
     rgb_order: BRG
     name: ${friendly_name}
+    
+select:
+  - platform: template
+    name: ${friendly_name} brightness type
+    optimistic: true
+    options:
+      - ldr
+      - light
+    initial_option: light
+    id: selecttype
+    
+sensor:
+  - platform: adc
+    id: ldr
+    pin: A0
+    name: ${friendly_name} brightness
+    update_interval: 5s
+    icon: "mdi:brightness-percent"
   
 time:
   - platform: homeassistant

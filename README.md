@@ -6,6 +6,7 @@ It uses the time and fastled plattform of esphome to controll the clock.
 - Get time from HA instance
 - Controll color and brightness from ha
 - Controll status leds from ha with service calls
+- select between Brightness based on light or attached LDR
 - uses esphome for OTA/API
 - supports minutes LEDS
 
